@@ -1,0 +1,12 @@
+
+# macOS. Reload: cmd+shift+,
+
+font-thicken = true
+
+background-opacity = 0.92
+background-blur-radius = 20
+
+macos-titlebar-style = tabs
+
+# global: needs Ghostty in Privacy > Accessibility.
+keybind = global:opt+backquote=toggle_quick_terminal

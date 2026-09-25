@@ -1,0 +1,10 @@
+
+# Linux. Reload: ctrl+shift+,
+
+background-opacity = 0.95
+window-decoration = true
+gtk-single-instance = true
+
+# global: needs Ghostty 1.2+ and an XDG desktop portal. Not supported on
+# GNOME Wayland yet, drop the prefix there.
+keybind = global:alt+backquote=toggle_quick_terminal

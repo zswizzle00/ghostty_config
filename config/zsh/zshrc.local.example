@@ -1,0 +1,6 @@
+# Copy to ~/.zshrc.local. It's sourced at the end of ~/.zshrc and the
+# bootstrap scripts never overwrite it, so machine-specific settings go here.
+
+# export PATH="$HOME/go/bin:$PATH"
+# alias work='cd ~/src/work'
+# command -v fortune >/dev/null && fortune | cowsay | lolcat

@@ -1,0 +1,104 @@
+# Installed by the bootstrap scripts from config/zsh/zshrc. Edits here are
+# overwritten on the next run, so put your own settings in ~/.zshrc.local.
+# See README for why the order matters.
+
+# p10k instant prompt has to stay at the very top.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$HOME/.bun/bin" ]] && export PATH="$HOME/.bun/bin:$PATH"
+export BUN_INSTALL="$HOME/.bun"
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Built from what is on disk so a missing plugin never warns at startup.
+# Order matters: vi-mode, fzf-tab, autosuggestions, highlighting, history.
+plugins=(git jsontools extract safe-paste)
+[[ $OSTYPE == darwin* ]] && plugins+=(macos)
+[[ -f /etc/debian_version ]] && plugins+=(debian)
+for _p in poetry poetry-env gcloud sublime sublime-merge fzf zoxide gh bun; do
+  [[ -d "$ZSH/plugins/$_p" ]] && plugins+=("$_p")
+done
+for _p in you-should-use zsh-vi-mode fzf-tab zsh-autosuggestions \
+          fast-syntax-highlighting zsh-history-substring-search; do
+  [[ -d "${ZSH_CUSTOM:-$ZSH/custom}/plugins/$_p" ]] && plugins+=("$_p")
+done
+unset _p
+
+source "$ZSH/oh-my-zsh.sh"
+
+# Everything below runs after plugins load. Personal config goes here.
+
+HISTSIZE=50000
+SAVEHIST=50000
+HISTFILE="$HOME/.zsh_history"
+setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+setopt SHARE_HISTORY INC_APPEND_HISTORY EXTENDED_HISTORY
+
+# zsh-vi-mode wipes keybindings on init, so re-apply them in its hook.
+zvm_after_init() {
+  bindkey '^[[A' history-substring-search-up
+  bindkey '^[[B' history-substring-search-down
+  bindkey -M vicmd 'k' history-substring-search-up
+  bindkey -M vicmd 'j' history-substring-search-down
+}
+if [[ -z "${plugins[(r)zsh-vi-mode]}" ]]; then
+  bindkey '^[[A' history-substring-search-up 2>/dev/null
+  bindkey '^[[B' history-substring-search-down 2>/dev/null
+fi
+
+if [[ -z "${plugins[(r)zoxide]}" ]] && command -v zoxide >/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+if [[ -z "${plugins[(r)fzf]}" ]] && command -v fzf >/dev/null; then
+  if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  fi
+fi
+
+if command -v eza >/dev/null; then
+  alias ls='eza --icons --group-directories-first'
+  alias ll='eza -lah --icons --group-directories-first'
+  alias lt='eza --tree --level=2 --icons'
+fi
+command -v nvim      >/dev/null && alias vim='nvim'
+command -v fastfetch >/dev/null && alias ff='fastfetch'
+command -v glow      >/dev/null && alias md='glow'
+command -v tofu      >/dev/null && alias tf='tofu'
+command -v gitleaks  >/dev/null && alias secrets='gitleaks detect --source . -v'
+
+# Debian ships these under different binary names.
+command -v batcat >/dev/null && ! command -v bat >/dev/null && alias bat='batcat'
+command -v fdfind >/dev/null && ! command -v fd  >/dev/null && alias fd='fdfind'
+
+alias zshrc='${EDITOR:-vi} ~/.zshrc && exec zsh'
+alias ghconf='${EDITOR:-vi} ~/.config/ghostty/config'
+
+# command -v fortune >/dev/null && fortune | cowsay | lolcat
+
+# Fixes "'xterm-ghostty': unknown terminal type" on a remote host.
+ssh-terminfo() {
+  if [[ -z "$1" ]]; then
+    print -u2 "usage: ssh-terminfo user@host"
+    return 1
+  fi
+  infocmp -x xterm-ghostty | ssh "$1" -- tic -x - \
+    && print "terminfo installed on $1" \
+    || print -u2 "failed, does the remote have tic (ncurses-bin)?"
+}
+
+export EDITOR='nvim'
+export VISUAL="$EDITOR"
+export LANG=en_US.UTF-8
+
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+[[ ! -f "$HOME/.p10k.zsh" ]] || source "$HOME/.p10k.zsh"

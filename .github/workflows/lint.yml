@@ -1,0 +1,17 @@
+name: lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -x -S warning install.sh scripts/*.sh
+      - name: zsh syntax
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zsh
+          zsh -n config/zsh/zshrc

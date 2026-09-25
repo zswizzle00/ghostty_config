@@ -1,0 +1,20 @@
+# Settings shared by every OS. The bootstrap scripts append config/ghostty/macos
+# or config/ghostty/linux to this file. Later lines win, and keybinds add up.
+# Themes: ghostty +list-themes   Check: ghostty +show-config
+
+theme = Catppuccin Mocha
+
+font-family = "MesloLGS Nerd Font Mono"
+font-size = 14
+
+window-padding-x = 12
+window-padding-y = 12
+
+cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
+
+# Installs Ghostty's terminfo on remote hosts so SSH sessions work.
+shell-integration-features = ssh-env,ssh-terminfo
+
+keybind = shift+enter=text:\x1b\r
