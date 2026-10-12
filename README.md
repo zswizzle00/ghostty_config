@@ -74,9 +74,10 @@ scrcpy, ty
 fast-syntax-highlighting, zsh-history-substring-search, you-should-use
 
 **GUI (`--with-gui`):** on macOS, Ghostty, VLC, PowerShell, Shottr, Sublime
-Text, Sublime Merge, gcloud, Alfred, UTM. On Debian, VLC, flameshot and
-virt-manager. Shottr, Alfred and UTM are macOS only. Sublime, PowerShell and
-gcloud need vendor apt repos, which the script does not add.
+Text, Sublime Merge, gcloud, Alfred, UTM. On Debian, VLC, flameshot,
+virt-manager, Sublime Text and Sublime Merge (from Sublime's apt repo, which
+the script adds). Shottr, Alfred and UTM are macOS only. PowerShell and gcloud
+need vendor apt repos, which the script does not add.
 
 ## Editing things afterwards
 

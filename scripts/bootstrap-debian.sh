@@ -141,12 +141,32 @@ install_extras() {
   fi
 }
 
+add_sublime_repo() {
+  local key=/etc/apt/keyrings/sublimehq-pub.asc
+  local src=/etc/apt/sources.list.d/sublime-text.sources
+  if [[ -f "$src" ]]; then
+    skip "Sublime apt repo already added"
+    return 0
+  fi
+  sudo install -d -m 0755 /etc/apt/keyrings \
+    && curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg | sudo tee "$key" >/dev/null \
+    && printf 'Types: deb\nURIs: https://download.sublimetext.com/\nSuites: apt/stable/\nSigned-By: %s\n' "$key" \
+         | sudo tee "$src" >/dev/null \
+    && sudo apt-get update -qq >/dev/null 2>&1 \
+    && info "added Sublime apt repo"
+}
+
 install_gui() {
   [[ $DO_GUI -eq 1 ]] || { skip "GUI apps (pass --with-gui)"; return 0; }
   step "Installing GUI apps"
   apt_install vlc flameshot virt-manager
+  if add_sublime_repo; then
+    apt_install sublime-text sublime-merge
+  else
+    FAILED_PKGS+=("sublime-text (repo setup failed)" "sublime-merge (repo setup failed)")
+  fi
   NOTES+=("Shottr, Alfred and UTM are macOS only. Installed flameshot and virt-manager instead.")
-  NOTES+=("Sublime Text, PowerShell and gcloud need vendor apt repos, not added here.")
+  NOTES+=("PowerShell and gcloud need vendor apt repos, not added here.")
   NOTES+=("Ghostty has no official Debian package. See ghostty.org for community builds.")
 }
 
