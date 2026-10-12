@@ -101,7 +101,8 @@ install_nvchad() {
 }
 
 # tealdeer below 1.8.0 downloads a page archive that no longer exists and fails
-# to unzip the 404 body. Package managers often ship older than that. See README.
+# to unzip the 404 body. Package managers often ship older than that. See
+# https://github.com/zswizzle00/ghostty_config/issues/2
 tealdeer_version() {
   have tldr || return 1
   tldr --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1

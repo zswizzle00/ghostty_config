@@ -129,39 +129,5 @@ it after writing the config and report any errors.
 
 ## Known issues
 
-**`'xterm-ghostty': unknown terminal type` over SSH.** Ghostty advertises a
-TERM the remote host has never heard of. The config sets
-`shell-integration-features = ssh-env,ssh-terminfo`, which installs Ghostty's
-terminfo on each host the first time you connect. It needs `tic` on the remote,
-and does not cover scripts, mosh or jump hosts. For those, run `ssh-terminfo
-user@host`, a function in `config/zsh/zshrc`. Restart Ghostty fully after
-changing shell integration settings, a config reload is not enough.
-
-**`tldr --update` fails with "could not find central directory end".**
-tealdeer below 1.8.0 asks for a page archive that no longer exists upstream and
-tries to unzip the 404 response. Distro packages are often older than that. The
-scripts detect the version, try a package manager upgrade, and on Debian fall
-back to a release binary in `~/.local/bin`. Background:
-https://github.com/tealdeer-rs/tealdeer/issues/459
-
-**Quick terminal hotkey does nothing on Linux.** Global keybinds need Ghostty
-1.2 or newer and a working XDG desktop portal, and they are not supported on
-GNOME Wayland yet. Drop the `global:` prefix and the bind works while Ghostty
-is focused.
-
-**NvChad wants Neovim 0.10 or newer.** The Debian script warns if apt's version
-is older. Use the AppImage or a PPA build.
-
-**No Ghostty package on Debian.** The script writes the config either way. See
-ghostty.org for community builds.
-
-## Deliberately excluded
-
-`zsh-autocomplete` replaces zsh's completion system and conflicts with fzf-tab.
-`zsh-syntax-highlighting` is superseded by fast-syntax-highlighting. Running
-either alongside these breaks tab completion or double-highlights the prompt.
-
-`neofetch` is archived. `fastfetch` is the drop-in replacement.
-
-`brew tap homebrew/cask-fonts` is no longer needed. Font casks are in
-homebrew/cask now.
+Known issues and deliberately excluded tools are tracked in
+[GitHub issues](https://github.com/zswizzle00/ghostty_config/issues).
